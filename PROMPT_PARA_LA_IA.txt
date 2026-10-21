@@ -1,0 +1,18 @@
+Necesito que trabajes con el proyecto Android incluido en este ZIP y me entregues una APK REAL instalable en Android, como archivo descargable .apk.
+
+INSTRUCCIONES:
+1. Revisa todos los archivos del proyecto antes de cambiar nada.
+2. Compila una APK debug instalable. Usa Java 17, Android Gradle Plugin 8.7.3, Gradle 8.9 y Android SDK platform/build-tools 35 si son compatibles con el proyecto.
+3. Si falla la compilación, identifica el error real, corrige el código/configuración necesaria y vuelve a compilar. No te limites a explicar cómo hacerlo.
+4. Comprueba que el archivo final exista, tenga extensión .apk y sea un APK Android válido; si tienes herramientas disponibles, verifica su firma y el contenido del paquete.
+5. Devuélveme un enlace directo al archivo APK compilado. No devuelvas solamente un ZIP, código fuente, capturas, una maqueta ni instrucciones. No afirmes que está compilado si no generaste el archivo binario.
+6. Si tu entorno no permite compilar o adjuntar binarios, dilo claramente y ofrece el método de compilación que sí puedas ejecutar; no inventes un enlace.
+
+CONTEXTO DEL PROTOTIPO:
+- Nombre: ARK Dragon Amber.
+- App Android vertical que carga app/src/main/assets/index.html en WebView.
+- Tiene cuatro coordenadas iniciales y permite añadir puntos manualmente; el almacenamiento local está activado.
+- Las coordenadas conocidas que deben conservarse son: 22.3778, -31105.6; 85.1275, -13478.5; 55.9612, -12103.5; 9.7148, -41618.5.
+- No inventes funciones que no existen. Este prototipo todavía NO lee el juego, no reconoce ámbar automáticamente, no tiene ventana flotante y no integra FreeARK/Good Console ni teletransporte.
+
+Prioridad: entregar la APK real y funcional del prototipo existente; no rediseñes ni amplíes funciones innecesariamente.

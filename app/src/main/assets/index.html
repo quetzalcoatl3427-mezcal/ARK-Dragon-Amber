@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17221c">
+<title>ARK Dragon Amber</title>
+<style>
+:root{color-scheme:dark;--bg:#101713;--panel:#1a2620;--line:#34483b;--gold:#f4b942;--muted:#aab9ae;--green:#75c58a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#26372b 0,#101713 60%);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#f3f6f1}
+header{padding:24px 18px 16px;text-align:center;border-bottom:1px solid var(--line)}
+.logo{font-size:34px}h1{margin:5px 0;font-size:23px;letter-spacing:.5px}header p{margin:4px 0;color:var(--muted);font-size:13px}
+main{max-width:720px;margin:auto;padding:15px;display:grid;gap:14px}.card{background:linear-gradient(145deg,#202e25,#17211b);border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:0 10px 25px #0003}
+h2{font-size:17px;margin:0 0 12px}label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
+input{width:100%;padding:13px;border-radius:10px;border:1px solid #4b6251;background:#0f1712;color:white;font-size:16px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:11px;padding:13px 12px;font-size:14px;font-weight:700;background:var(--gold);color:#1b2119;width:100%;margin-top:12px}.btn.secondary{background:#314638;color:#f4f8f2;border:1px solid #4b6652}.btn:active{transform:scale(.99)}
+.result{background:#101a13;border:1px solid #3b5742;border-radius:12px;padding:13px;margin-top:12px}.distance{font-size:26px;font-weight:800;color:var(--gold)}.small{font-size:12px;color:var(--muted);line-height:1.5}.pill{display:inline-block;border:1px solid #526858;border-radius:99px;padding:4px 8px;font-size:11px;color:#c9d9cc;margin:2px}
+.list{display:grid;gap:8px}.deposit{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border-radius:10px;background:#111a14;border:1px solid #2e4033}.deposit strong{display:block;font-size:13px}.deposit span{font-size:12px;color:var(--muted)}
+footer{text-align:center;color:#819287;font-size:11px;padding:0 18px 25px}
+@media(min-width:620px){main{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<header><div class="logo">💎🦖</div><h1>ARK DRAGON AMBER</h1><p>Prototipo de detector de ámbar · ARK Mobile clásico</p></header>
+<main>
+<section class="card">
+<h2>📍 Tu ubicación en el juego</h2>
+<p class="small">Copia los valores numéricos del mensaje de ubicación que publica ARK en el chat global. El prototipo no puede leer el chat automáticamente.</p>
+<div class="row">
+<div><label for="lat">LAT</label><input id="lat" inputmode="decimal" placeholder="Ej. 22.3778"></div>
+<div><label for="long">LONG</label><input id="long" inputmode="decimal" placeholder="Ej. -31105.6"></div>
+</div>
+<label for="z">Z (opcional)</label><input id="z" inputmode="decimal" placeholder="Ej. -43386.74">
+<button class="btn" onclick="findNearest()">BUSCAR ÁMBAR CERCANO</button>
+<div id="result" class="result" aria-live="polite"><span class="small">Introduce LAT y LONG para calcular cuál de las ubicaciones guardadas está más cerca.</span></div>
+</section>
+<section class="card">
+<h2>💠 Depósitos guardados</h2>
+<p class="small">Coordenadas proporcionadas anteriormente. Confirma cada punto dentro de tu mapa; la app no puede verificar que siga existiendo.</p>
+<div id="deposits" class="list"></div>
+<button class="btn secondary" onclick="toggleAdd()">＋ Añadir ubicación</button>
+<div id="addForm" hidden>
+<label for="name">Nombre del punto</label><input id="name" placeholder="Ej. Cueva norte">
+<div class="row"><div><label for="nlat">LAT</label><input id="nlat" inputmode="decimal"></div><div><label for="nlong">LONG</label><input id="nlong" inputmode="decimal"></div></div>
+<button class="btn" onclick="addDeposit()">GUARDAR PUNTO</button>
+</div>
+</section>
+<section class="card wide">
+<h2>🧭 Cómo usarlo</h2>
+<div class="pill">Android</div><div class="pill">Sin root</div><div class="pill">Sin conexión necesaria para calcular</div>
+<ol class="small">
+<li>En ARK, comparte tu ubicación por el chat global.</li>
+<li>Escribe LAT y LONG en los campos de arriba.</li>
+<li>Pulsa “Buscar ámbar cercano” para ordenar los puntos por distancia en coordenadas.</li>
+<li>Usa la ubicación como referencia y confirma el depósito visualmente en el juego.</li>
+</ol>
+<p class="small">Nota técnica: las coordenadas guardadas tienen valores de LONG de gran magnitud. Este prototipo calcula distancia plana entre LAT/LONG y no conoce la escala exacta del mapa; por eso la distancia mostrada es una estimación en unidades de coordenadas, no metros. No incluye Good Console, teletransporte ni funciones administrativas de FreeARK.</p>
+</section>
+</main>
+<footer>Prototipo local de navegación. No está afiliado a Studio Wildcard ni a FreeARK.</footer>
+<script>
+const defaults=[
+ {name:"Depósito 1",lat:22.3778,long:-31105.6},
+ {name:"Depósito 2",lat:85.1275,long:-13478.5},
+ {name:"Depósito 3",lat:55.9612,long:-12103.5},
+ {name:"Depósito 4",lat:9.7148,long:-41618.5}
+];
+const STORAGE_KEY='ark-dragon-amber-deposits-v1';
+let deposits=loadDeposits();
+function loadDeposits(){
+ try { const saved=localStorage.getItem(STORAGE_KEY); if(saved){const parsed=JSON.parse(saved); if(Array.isArray(parsed)) return parsed.filter(d=>d&&typeof d.name==='string'&&Number.isFinite(d.lat)&&Number.isFinite(d.long));} } catch(e) {}
+ return defaults.slice();
+}
+function saveDeposits(){ try { localStorage.setItem(STORAGE_KEY,JSON.stringify(deposits)); } catch(e) {} }
+const $=id=>document.getElementById(id);
+function num(v){return Number(String(v).trim().replace(',','.'))}
+function valid(v){return String(v).trim()!==''&&Number.isFinite(num(v))}
+function render(){
+ $('deposits').innerHTML=deposits.map((d,i)=>`<div class="deposit"><div><strong>${esc(d.name)}</strong><span>LAT ${d.lat} · LONG ${d.long}</span></div><button class="btn secondary" style="width:auto;margin:0;padding:8px 10px" onclick="usePoint(${i})">Usar</button></div>`).join('');
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function usePoint(i){$('lat').value=deposits[i].lat;$('long').value=deposits[i].long;findNearest()}
+function findNearest(){
+ const la=$('lat').value,lo=$('long').value;
+ if(!valid(la)||!valid(lo)){ $('result').innerHTML='<span class="small">Escribe números válidos en LAT y LONG.</span>';return; }
+ const a=num(la),b=num(lo);
+ const sorted=deposits.map(d=>({...d,distance:Math.hypot(d.lat-a,d.long-b)})).sort((x,y)=>x.distance-y.distance);
+ if(!sorted.length){$('result').textContent='No hay puntos guardados.';return}
+ const d=sorted[0];
+ $('result').innerHTML=`<div class="small">PUNTO MÁS CERCANO</div><strong>${esc(d.name)}</strong><div class="distance">${d.distance.toFixed(2)} unidades de coordenadas</div><div class="small">LAT ${d.lat} · LONG ${d.long}</div><hr style="border-color:#304637"><div class="small">Siguientes puntos:</div>${sorted.slice(1).map(x=>`<div class="small">${esc(x.name)} — ${x.distance.toFixed(2)}</div>`).join('')}`;
+}
+function toggleAdd(){$('addForm').hidden=!$('addForm').hidden}
+function addDeposit(){
+ const name=$('name').value.trim()||`Depósito ${deposits.length+1}`,la=$('nlat').value,lo=$('nlong').value;
+ if(!valid(la)||!valid(lo)){alert('Introduce LAT y LONG válidos.');return}
+ deposits.push({name,lat:num(la),long:num(lo)});saveDeposits();render();$('name').value=$('nlat').value=$('nlong').value='';$('addForm').hidden=true;
+}
+render();
+</script>
+</body></html>

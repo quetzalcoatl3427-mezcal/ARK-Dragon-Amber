@@ -1,0 +1,37 @@
+ARK DRAGON AMBER — PAQUETE PARA COMPILAR APK
+============================================
+
+QUÉ ES
+------
+Prototipo Android vertical que abre un detector de puntos de ámbar dentro de la app.
+Incluye cuatro puntos iniciales y permite agregar puntos manualmente. Los puntos añadidos
+se guardan localmente en el dispositivo.
+
+IMPORTANTE: esto NO es una APK ya compilada. Es el código fuente listo para que una IA o
+un servicio de compilación lo revise, compile y devuelva el archivo APK real.
+
+CÓMO PEDÍRSELO A OTRA IA
+------------------------
+Abre y adjunta TODO este ZIP y pega el texto de PROMPT_PARA_LA_IA.txt. Pídele que compile
+el proyecto, corrija cualquier error real de compilación y entregue el archivo .apk como
+archivo descargable, no solo el código ni otro ZIP.
+
+COMPILACIÓN AUTOMÁTICA CON GITHUB ACTIONS
+-----------------------------------------
+1. Extrae este ZIP. Los archivos build.gradle, settings.gradle y la carpeta app deben quedar
+   en la raíz del repositorio (no dentro de otra carpeta anidada).
+2. Sube esos archivos a un repositorio GitHub.
+3. Entra en Actions y ejecuta “Build ARK Dragon Amber APK”.
+4. Al terminar correctamente, abre la ejecución y descarga el artefacto
+   “ARK-Dragon-Amber-debug-apk”. Dentro estará app-debug.apk.
+
+QUÉ HACE Y QUÉ NO HACE
+----------------------
+Sí: muestra los puntos guardados y permite introducir coordenadas manualmente.
+No: no detecta ámbar automáticamente en la imagen del juego; no lee el chat de ARK; no crea
+ventanas flotantes; no incluye Good Console, teletransporte ni permisos de administrador de
+FreeARK; no modifica ARK ni sus servidores. La distancia mostrada es una aproximación basada
+en las coordenadas introducidas y no debe asumirse como distancia real en metros.
+
+No se ha compilado ni probado una APK desde este entorno. No se debe presentar este ZIP como
+si fuera un instalador APK.

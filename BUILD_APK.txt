@@ -1,0 +1,12 @@
+Cómo generar un APK real desde este proyecto
+=============================================
+
+Este entorno de chat no tiene Android SDK ni Gradle, así que no puedo compilar ni verificar aquí el instalador. Añadí un flujo de GitHub Actions que compila el APK en un runner de Ubuntu.
+
+1. Extrae este ZIP en una carpeta.
+2. Sube el contenido a un repositorio GitHub propio.
+3. Abre la pestaña Actions y ejecuta “Build ARK Dragon Amber APK” (o espera a que termine el flujo al hacer push).
+4. En la ejecución completada, descarga el artefacto “ARK-Dragon-Amber-debug-apk”.
+5. Dentro estará app-debug.apk para pruebas en Android.
+
+Este APK de prueba contendrá solo el prototipo detector envuelto en una app Android. No contiene Good Console ni funciones de administración de FreeARK, que todavía requieren implementación e integración separadas.
