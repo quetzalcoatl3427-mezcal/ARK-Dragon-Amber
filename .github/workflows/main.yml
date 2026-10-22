@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar el repositorio
+      - name: Descargar el proyecto
         uses: actions/checkout@v4
 
       - name: Instalar Java 17
@@ -27,9 +27,12 @@ jobs:
 
       - name: Preparar Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: ''
 
       - name: Instalar componentes Android
         run: |
+          yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Configurar Gradle 8.9
@@ -37,10 +40,10 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Compilar APK debug
+      - name: Compilar APK
         run: gradle assembleDebug
 
-      - name: Guardar APK para descargar
+      - name: Publicar APK descargable
         uses: actions/upload-artifact@v4
         with:
           name: ARK-Dragon-Amber-debug-apk
